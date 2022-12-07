@@ -6,8 +6,7 @@ import com.kostenko.method.dto.ResultDto;
 
 import java.util.logging.Logger;
 
-import static com.kostenko.unil.Constants.EPS;
-import static com.kostenko.unil.Constants.START_POINT;
+import static com.kostenko.util.Constants.*;
 
 public class SimpleIterationMethod implements CustomMethod {
     public final CustomFunction customFunction;
@@ -36,7 +35,7 @@ public class SimpleIterationMethod implements CustomMethod {
     }
 
     private double teta() {
-        return -0.02;
+        return -0.01;
     }
 
     private void log(double x, int i) {

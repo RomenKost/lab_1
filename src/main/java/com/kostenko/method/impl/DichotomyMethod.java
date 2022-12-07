@@ -6,7 +6,7 @@ import com.kostenko.method.dto.ResultDto;
 
 import java.util.logging.Logger;
 
-import static com.kostenko.unil.Constants.*;
+import static com.kostenko.util.Constants.*;
 
 public class DichotomyMethod implements CustomMethod {
     public final CustomFunction customFunction;

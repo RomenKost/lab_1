@@ -5,8 +5,6 @@ import com.kostenko.node.NodeService;
 
 import java.util.Arrays;
 
-import static com.kostenko.util.Constants.*;
-
 public class InterpolationFunction implements CustomFunction {
     private final NodeService nodeService;
     private final CustomFunction customFunction;
@@ -18,27 +16,28 @@ public class InterpolationFunction implements CustomFunction {
 
     @Override
     public double calculate(double x) {
-        double h = (END_RANGE - START_RANGE)/(COUNT_OF_NODES - 1);
-        double q = (x - START_RANGE)/h;
-
         Double[] xArgs = nodeService.getNodes();
         Double[] yArgs = Arrays.stream(xArgs).map(customFunction::calculate).toArray(Double[]::new);
 
-        Double[][] deltaY = new Double[yArgs.length][yArgs.length];
-        deltaY[0] = yArgs;
+        Double[] aArgs = new Double[yArgs.length];
+        aArgs[0] = yArgs[0];
         for (int i = 1; i < yArgs.length; i++) {
-            for (int j = 0; j < yArgs.length - i; j++) {
-                deltaY[i][j] = deltaY[i-1][j+1] - deltaY[i-1][j];
+            double partSum = 0;
+            double partMult = 1;
+            for (int j = 0; j < i; j++) {
+                partSum += aArgs[j]*partMult;
+                partMult *= xArgs[i] - xArgs[j];
             }
+            aArgs[i] = (yArgs[i] - partSum) / partMult;
         }
 
-        double interpolationSum = yArgs[0];
-        double summary = interpolationSum;
-        for (int i = 1; i < yArgs.length; i++) {
-            summary = summary / yArgs[i-1] * yArgs[i] / i * q;
-            q--;
-            interpolationSum += summary;
+        double result = 0;
+        double partMult = 1;
+        for (int i = 0; i < yArgs.length; i++) {
+            result += aArgs[i]*partMult;
+            partMult *= x - xArgs[i];
         }
-        return summary;
+
+        return result;
     }
 }
